@@ -1,50 +1,63 @@
-import React ,{useState,useEffect}from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { getUserInfo } from '../jwtHelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function HomeScreen({navigation}) {
+export default function HomeScreen({ navigation }) {
+  const [userInfo, setUserInfo] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-    const [userInfo, setUserInfo] = useState(null);
-    useEffect(() => {
-      const fetchUserInfo = async () => {
-        const info = await getUserInfo();
-        setUserInfo(info);
-        console.log("on homescreen",info);
-      };
-  
-      fetchUserInfo();
-    }, []);
-  
-    const logout = async () => {
-        await AsyncStorage.removeItem('jwt_token');
-        // setUserToken(null);
-      };
-
-    const handleLogout = async () => {
-      await logout();
-      navigation.navigate('Login'); // Navigate to the Login screen after logout
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const info = await getUserInfo();
+      setUserInfo(info);
+      console.log("on homescreen", info);
     };
-  
+
+    fetchUserInfo();
+  }, []);
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('jwt_token');
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigation.navigate('Login'); // Navigate to the Login screen after logout
+  };
+
+  const handleAddButtonPress = () => {
+    setModalVisible(true);
+  };
+
+  const handleAddIncome = () => {
+    setModalVisible(false);
+    navigation.navigate('Income'); // Navigate to Add Income screen
+  };
+
+  const handleAddExpense = () => {
+    setModalVisible(false);
+    navigation.navigate('AddExpense'); // Navigate to Add Expense screen
+  };
+
   return (
     <ScrollView style={styles.container}>
       <StatusBar style="auto" />
-      
+
       <View style={styles.header}>
         <View style={styles.profileContainer}>
           <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.profileImage} />
-          <Text>{userInfo?.username}</Text>
+          {/* <Text>{userInfo?.username}</Text> */}
         </View>
         <View style={styles.monthContainer}>
           <Text style={styles.monthText}>October</Text>
           <FontAwesome name="angle-down" size={24} color="black" />
         </View>
         <TouchableOpacity>
-            <MaterialIcons name="logout" size={24} color="black" onPress={handleLogout} style={styles.notificationIcon}/>
+          <MaterialIcons name="logout" size={24} color="black" onPress={handleLogout} style={styles.notificationIcon} />
         </TouchableOpacity>
-        {/* <MaterialIcons name="notifications-none" size={24} color="black" style={styles.notificationIcon} /> */}
       </View>
 
       <View style={styles.balanceContainer}>
@@ -65,7 +78,6 @@ export default function HomeScreen({navigation}) {
 
       <View style={styles.spendFrequencyContainer}>
         <Text style={styles.spendFrequencyLabel}>Spend Frequency</Text>
-        {/* Placeholder for the graph */}
         <View style={styles.graphPlaceholder}></View>
       </View>
 
@@ -120,7 +132,7 @@ export default function HomeScreen({navigation}) {
           <MaterialIcons name="compare-arrows" size={24} color="black" />
           <Text>Transaction</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={handleAddButtonPress}>
           <FontAwesome name="plus-circle" size={40} color="purple" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.navItem}>
@@ -132,6 +144,27 @@ export default function HomeScreen({navigation}) {
           <Text>Profile</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.modalButton} onPress={handleAddIncome}>
+              <Text style={styles.modalButtonText}>Add Income</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={handleAddExpense}>
+              <Text style={styles.modalButtonText}>Add Expense</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.modalButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -278,5 +311,29 @@ const styles = StyleSheet.create({
   },
   navItem: {
     alignItems: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalButton: {
+    padding: 10,
+    marginVertical: 5,
+    backgroundColor: 'purple',
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 18,
   },
 });

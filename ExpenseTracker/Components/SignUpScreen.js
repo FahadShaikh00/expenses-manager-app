@@ -103,6 +103,10 @@ export default function SignUpScreen({ navigation }) {
         <Text style={styles.googleButtonText}><AntDesign name="google" size={24} color="#6A4BFF" /> Sign Up with Google</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity onPress={() => navigation.navigate('Income')}>
+        <Text style={styles.loginText}>Goto Income Test</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.loginText}>Already have an account? Login</Text>
       </TouchableOpacity>

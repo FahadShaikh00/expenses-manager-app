@@ -51,6 +51,15 @@ export const login = async (email, password) => {
   }
 };
 
+export const AddIncome = async (source,amount,date,description) =>{
+try{
+  const response = await api.post('/Incomes', {source,amount,date});
+  return response;
+}catch(error){
+  console.log('AddIncome Error:', error); // Add logging
+}
+} 
+
 export const apiRequest = async (url, options = {}) => {
   try {
     const response = await api(url, options);

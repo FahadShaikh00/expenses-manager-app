@@ -5,6 +5,7 @@ import SignUpScreen from './Components/SignUpScreen';
 import LoginScreen from './Components/LoginScreen';
 import HomeScreen from './Components/HomeScreen';
 import AuthLoadingScreen from './Components/AuthLoadingScreen';
+import IncomeScreen from './Components/IncomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,11 @@ export default function App() {
           name="SignUp" 
           component={SignUpScreen} 
           options={{ title: 'Sign Up' }}
+        />
+        <Stack.Screen 
+          name="Income" 
+          component={IncomeScreen} 
+          options={{ title: 'Add Income' }}
         />
         <Stack.Screen 
           name="Login" 
